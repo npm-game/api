@@ -1,0 +1,110 @@
+﻿{
+  " ": {
+    "Score": 0,
+    "OccurrenceCount": 2
+  },
+  "A": {
+    "Score": 1,
+    "OccurrenceCount": 9
+  },
+  "B": {
+    "Score": 3,
+    "OccurrenceCount": 2
+  },
+  "C": {
+    "Score": 3,
+    "OccurrenceCount": 2
+  },
+  "D": {
+    "Score": 2,
+    "OccurrenceCount": 4
+  },
+  "E": {
+    "Score": 1,
+    "OccurrenceCount": 12
+  },
+  "F": {
+    "Score": 4,
+    "OccurrenceCount": 2
+  },
+  "G": {
+    "Score": 2,
+    "OccurrenceCount": 3
+  },
+  "H": {
+    "Score": 4,
+    "OccurrenceCount": 2
+  },
+  "I": {
+    "Score": 1,
+    "OccurrenceCount": 9
+  },
+  "J": {
+    "Score": 8,
+    "OccurrenceCount": 1
+  },
+  "K": {
+    "Score": 5,
+    "OccurrenceCount": 1
+  },
+  "L": {
+    "Score": 1,
+    "OccurrenceCount": 4
+  },
+  "M": {
+    "Score": 3,
+    "OccurrenceCount": 2
+  },
+  "N": {
+    "Score": 1,
+    "OccurrenceCount": 6
+  },
+  "O": {
+    "Score": 1,
+    "OccurrenceCount": 8
+  },
+  "P": {
+    "Score": 3,
+    "OccurrenceCount": 2
+  },
+  "Q": {
+    "Score": 10,
+    "OccurrenceCount": 1
+  },
+  "R": {
+    "Score": 1,
+    "OccurrenceCount": 6
+  },
+  "S": {
+    "Score": 1,
+    "OccurrenceCount": 4
+  },
+  "T": {
+    "Score": 1,
+    "OccurrenceCount": 6
+  },
+  "U": {
+    "Score": 1,
+    "OccurrenceCount": 4
+  },
+  "V": {
+    "Score": 4,
+    "OccurrenceCount": 2
+  },
+  "W": {
+    "Score": 4,
+    "OccurrenceCount": 2
+  },
+  "X": {
+    "Score": 8,
+    "OccurrenceCount": 1
+  },
+  "Y": {
+    "Score": 4,
+    "OccurrenceCount": 2
+  },
+  "Z": {
+    "Score": 10,
+    "OccurrenceCount": 1
+  }
+}
