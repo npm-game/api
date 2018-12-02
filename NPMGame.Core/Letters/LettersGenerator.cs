@@ -39,7 +39,7 @@ namespace NPMGame.Core.Letters
             var byteArray = new byte[4];
             _rngProvider.GetBytes(byteArray);
 
-            return (int)((BitConverter.ToUInt32(byteArray, 0) % totalWeight) + 1);
+            return (int)(BitConverter.ToUInt32(byteArray, 0) % totalWeight);
         }
     }
 }
