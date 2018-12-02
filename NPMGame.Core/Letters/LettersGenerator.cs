@@ -12,16 +12,17 @@ namespace NPMGame.Core.Letters
         public static Letter GenerateLetter()
         {
             var lettersSortedByOccurence = LettersCollection.Letters.Values
-                .OrderBy(l => l.OccurrenceCount);
+                .OrderBy(l => l.OccurrenceCount)
+                .ToList();
 
             Letter selectedLetter = null;
 
-            var rand = GetRandomNumber();
+            var rand = GetRandomWeight(lettersSortedByOccurence.Select(l => l.OccurrenceCount).Sum());
 
             var cumulative = 0.0;
             foreach (var letter in lettersSortedByOccurence)
             {
-                cumulative += letter.Score;
+                cumulative += letter.OccurrenceCount;
 
                 if (rand < cumulative)
                 {
@@ -33,12 +34,12 @@ namespace NPMGame.Core.Letters
             return selectedLetter;
         }
 
-        private static uint GetRandomNumber()
+        private static int GetRandomWeight(int totalWeight)
         {
             var byteArray = new byte[4];
             _rngProvider.GetBytes(byteArray);
 
-            return BitConverter.ToUInt32(byteArray, 0);
+            return (int)((BitConverter.ToUInt32(byteArray, 0) % totalWeight) + 1);
         }
     }
 }
