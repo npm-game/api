@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Letters;
 using NPMGame.Core.Models;
@@ -58,6 +59,22 @@ namespace NPMGame.Core.Tests.Generation
 
             // Assert that all letters are generated at least once
             Assert.That(generatedLetterCounts.Keys, Is.EquivalentTo(LettersCollection.Letters.Keys));
+
+            // Get occurrences of generated letters
+            var totalPossibleOccurrences = LettersCollection.TotalPossibleOccurrences;
+
+            var sortedExpectedOccurrenceRatios = LettersCollection.Letters
+                .OrderBy(x => x.Key)
+                .Select(x => x.Value.OccurrenceCount)
+                .ToList();
+
+            var sortedGeneratedOccurenceRatios = generatedLetterCounts
+                .OrderBy(x => x.Key)
+                .Select(x => ((double)x.Value) / samples * totalPossibleOccurrences)
+                .ToList();
+
+            // Assert that occurrence ratios are within reasonable error rate of expected occurrences
+            Assert.That(sortedGeneratedOccurenceRatios, Is.EqualTo(sortedExpectedOccurrenceRatios).Within(0.05));
         }
     }
 }
