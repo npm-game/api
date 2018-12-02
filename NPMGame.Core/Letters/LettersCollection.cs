@@ -4,7 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NPMGame.Core.Models;
 
-namespace NPMGame.Core.Constants
+namespace NPMGame.Core.Letters
 {
     public static class LettersCollection
     {

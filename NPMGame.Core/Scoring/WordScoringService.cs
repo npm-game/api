@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using NPMGame.Core.Constants;
+using NPMGame.Core.Letters;
 
 namespace NPMGame.Core.Scoring
 {
