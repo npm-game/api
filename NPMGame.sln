@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NPMGame.API", "NPMGame.API\NPMGame.API.csproj", "{18AD20DD-B21A-48D2-96B0-E90B15855372}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPMGame.Core", "NPMGame.Core\NPMGame.Core.csproj", "{3EB26E16-D1E4-4AB0-9866-96C28B4B40C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NPMGame.Core", "NPMGame.Core\NPMGame.Core.csproj", "{3EB26E16-D1E4-4AB0-9866-96C28B4B40C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPMGame.Core.Tests", "NPMGame.Core.Tests\NPMGame.Core.Tests.csproj", "{544AD330-08A1-4948-B3DF-6AB469B4705D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3EB26E16-D1E4-4AB0-9866-96C28B4B40C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EB26E16-D1E4-4AB0-9866-96C28B4B40C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EB26E16-D1E4-4AB0-9866-96C28B4B40C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544AD330-08A1-4948-B3DF-6AB469B4705D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544AD330-08A1-4948-B3DF-6AB469B4705D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544AD330-08A1-4948-B3DF-6AB469B4705D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544AD330-08A1-4948-B3DF-6AB469B4705D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
