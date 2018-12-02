@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using NPMGame.Core.Letters;
 
-namespace NPMGame.Core.Scoring
+namespace NPMGame.Core.Words
 {
     public static class WordScoringService
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using NPMGame.Core.Models.Enums;
 
-namespace NPMGame.Core.Matching
+namespace NPMGame.Core.Words
 {
-    public static class PackageMatcher
+    public static class WordMatcher
     {
         public static MatchType MatchWordWithPackage(string word, string packageName)
         {
