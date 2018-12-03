@@ -7,7 +7,7 @@ namespace NPMGame.Core.Models.NPM
     {
         public List<NPMSearchObject> objects { get; set; }
         public int total { get; set; }
-        public DateTime time { get; set; }
+        public string time { get; set; }
     }
 
     public class NPMSearchObject
