@@ -40,8 +40,8 @@ namespace NPMGame.Core.Tests.Generation
             {
                 generatedLetterTasks.Add(Task.Run(() => LettersGenerator.GenerateLetter()));
             }
-
             var generatedLetters = await Task.WhenAll(generatedLetterTasks);
+
 
             var generatedLetterCounts = new Dictionary<char, int>();
 
