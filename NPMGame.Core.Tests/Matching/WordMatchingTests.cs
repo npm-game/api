@@ -29,7 +29,7 @@ namespace NPMGame.Core.Tests.Matching
             var matchingTasks = wordMatchingTestDefintions
                 .Select(async (pair) =>
                 {
-                    var matchTypeResult = await WordMatcher.MatchWordAgainstNPM(pair.Key);
+                    var matchTypeResult = await WordMatchingService.MatchWordAgainstNPM(pair.Key);
 
                     Assert.That(matchTypeResult, Is.EqualTo(pair.Value));
                 });
