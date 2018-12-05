@@ -10,7 +10,7 @@ using NPMGame.Core.Models.NPM;
 
 namespace NPMGame.Core.Words
 {
-    public static class WordMatcher
+    public static class WordMatchingService
     {
         private const string _npmRegistryUrl = "https://registry.npmjs.org";
 
