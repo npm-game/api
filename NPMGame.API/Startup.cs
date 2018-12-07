@@ -25,6 +25,8 @@ namespace NPMGame.API
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            services.AddSignalR();
+
             services.AddCors();
 
             services.AddMarten(Configuration);

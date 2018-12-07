@@ -15,10 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Models\Resource\" />
     <Folder Include="Models\Responses\" />
-    <Folder Include="Repositories\Resource\" />
   </ItemGroup>
 
   <ItemGroup>
