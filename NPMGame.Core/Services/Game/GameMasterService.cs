@@ -28,7 +28,6 @@ namespace NPMGame.Core.Services.Game
 
         public async Task<GameSession> AddPlayerToGame(Guid gameId, Guid userId)
         {
-            // TODO: Check if player already part of any other game
             var game = await UnitOfWork.GetRepository<GameSessionRepository>().Get(gameId);
 
             if (game == null)
@@ -36,6 +35,7 @@ namespace NPMGame.Core.Services.Game
                 throw new GameException(ErrorMessages.GameNotFound);
             }
 
+            // TODO: Check if player already part of any other game
             var user = await UnitOfWork.GetRepository<UserRepository>().Get(userId);
 
             if (user == null)
@@ -47,6 +47,22 @@ namespace NPMGame.Core.Services.Game
             var player = new GamePlayer(user.Id);
 
             game.Players.Add(player);
+
+            var updatedGame = await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
+
+            return updatedGame;
+        }
+
+        public async Task<GameSession> StartGame(Guid gameId)
+        {
+            var game = await UnitOfWork.GetRepository<GameSessionRepository>().Get(gameId);
+
+            if (game == null)
+            {
+                throw new GameException(ErrorMessages.GameNotFound);
+            }
+
+            game.State = GameState.InProgress;
 
             var updatedGame = await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
 

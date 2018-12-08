@@ -32,7 +32,6 @@ namespace NPMGame.Core.Models.Game
     public enum GameState
     {
         NotStarted,
-        Setup,
         InProgress,
         Done
     }
