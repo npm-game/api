@@ -24,6 +24,8 @@ namespace NPMGame.Core.Models.Game
         {
             State = GameState.NotStarted;
             Options = options;
+
+            Players = new List<GamePlayer>();
         }
     }
 
@@ -44,6 +46,11 @@ namespace NPMGame.Core.Models.Game
 
         public int Score { get; set; }
         public double Multiplier { get; set; }
+
+        public GamePlayer(Guid userId)
+        {
+            UserId = userId;
+        }
     }
 
     public class GameOptions
