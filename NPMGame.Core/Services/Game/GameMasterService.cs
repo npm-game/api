@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Marten;
 using NPMGame.Core.Base;
@@ -22,6 +23,8 @@ namespace NPMGame.Core.Services.Game
             var game = new GameSession(options);
 
             var createdGame = await UnitOfWork.GetRepository<GameSessionRepository>().Create(game);
+
+            await AddPlayerToGame(createdGame.Id, creatorUserId);
 
             return createdGame;
         }
@@ -63,6 +66,10 @@ namespace NPMGame.Core.Services.Game
             }
 
             game.State = GameState.InProgress;
+            game.StartTime = DateTime.Now;
+
+            // TODO: Do a dice roll to pick the first player
+            game.CurrentTurnPlayerId = game.Players.First().UserId;
 
             var updatedGame = await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
 
