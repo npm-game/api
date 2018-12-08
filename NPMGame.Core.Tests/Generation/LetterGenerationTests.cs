@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Letters;
 using NPMGame.Core.Models;
+using NPMGame.Core.Models.Game;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Generation

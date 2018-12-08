@@ -1,4 +1,4 @@
-﻿namespace NPMGame.Core.Models
+﻿namespace NPMGame.Core.Models.Game
 {
     public class Letter
     {

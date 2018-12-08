@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using NPMGame.Core.Models;
+using NPMGame.Core.Models.Game;
 
 namespace NPMGame.Core.Letters
 {

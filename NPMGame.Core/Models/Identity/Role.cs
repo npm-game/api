@@ -1,4 +1,4 @@
-﻿namespace NPMGame.API.Models.Identity
+﻿namespace NPMGame.Core.Models.Identity
 {
     public enum Role
     {

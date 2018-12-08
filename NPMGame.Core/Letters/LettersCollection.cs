@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using NPMGame.Core.Models;
+using NPMGame.Core.Models.Game;
 
 namespace NPMGame.Core.Letters
 {
