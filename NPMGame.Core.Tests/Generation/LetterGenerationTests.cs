@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NPMGame.Core.Letters;
-using NPMGame.Core.Models;
-using NPMGame.Core.Models.Game;
+using NPMGame.Core.Models.Game.Words;
+using NPMGame.Core.Workers.Letters;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Generation

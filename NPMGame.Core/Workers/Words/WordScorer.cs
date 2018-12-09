@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using NPMGame.Core.Letters;
+using NPMGame.Core.Workers.Letters;
 
-namespace NPMGame.Core.Words
+namespace NPMGame.Core.Workers.Words
 {
-    public static class WordScoringService
+    public static class WordScorer
     {
         public static int GetScoreForWord(string word)
         {

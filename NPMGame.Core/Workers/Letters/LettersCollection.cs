@@ -3,10 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
-using NPMGame.Core.Models;
-using NPMGame.Core.Models.Game;
+using NPMGame.Core.Models.Game.Words;
 
-namespace NPMGame.Core.Letters
+namespace NPMGame.Core.Workers.Letters
 {
     public static class LettersCollection
     {

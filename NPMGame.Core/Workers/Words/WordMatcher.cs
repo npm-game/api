@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.NPM;
 
-namespace NPMGame.Core.Words
+namespace NPMGame.Core.Workers.Words
 {
-    public static class WordMatchingService
+    public static class WordMatcher
     {
         private const string _npmRegistryUrl = "https://registry.npmjs.org";
 

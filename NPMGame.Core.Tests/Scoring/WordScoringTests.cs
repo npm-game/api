@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NPMGame.Core.Letters;
-using NPMGame.Core.Models.Enums;
-using NPMGame.Core.Words;
+using NPMGame.Core.Workers.Letters;
+using NPMGame.Core.Workers.Words;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Scoring
@@ -33,7 +30,7 @@ namespace NPMGame.Core.Tests.Scoring
 
             foreach (var pair in wordScoringTestDefintions)
             {
-                var matchTypeResult = WordScoringService.GetScoreForWord(pair.Key);
+                var matchTypeResult = WordScorer.GetScoreForWord(pair.Key);
 
                 Assert.That(matchTypeResult, Is.EqualTo(pair.Value));
             }

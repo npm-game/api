@@ -1,14 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using NPMGame.Core.Models;
-using NPMGame.Core.Models.Game;
+using System.Threading.Tasks;
+using NPMGame.Core.Models.Game.Words;
 
-namespace NPMGame.Core.Letters
+namespace NPMGame.Core.Workers.Letters
 {
     public static class LettersGenerator
     {
         private static readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();
+
+        public static async Task<List<Letter>> GenerateLetters(int count)
+        {
+            var letterTasks = new List<Task<Letter>>(count)
+                .Select(x => Task.Run(() => GenerateLetter()));
+
+            return (await Task.WhenAll(letterTasks)).ToList();
+        }
 
         public static Letter GenerateLetter()
         {

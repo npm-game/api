@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Models.Enums;
-using NPMGame.Core.Words;
+using NPMGame.Core.Workers.Words;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Matching
@@ -29,7 +29,7 @@ namespace NPMGame.Core.Tests.Matching
             var matchingTasks = wordMatchingTestDefintions
                 .Select(async (pair) =>
                 {
-                    var matchTypeResult = await WordMatchingService.MatchWordAgainstNPM(pair.Key);
+                    var matchTypeResult = await WordMatcher.MatchWordAgainstNPM(pair.Key);
 
                     Assert.That(matchTypeResult, Is.EqualTo(pair.Value));
                 });
