@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NPMGame.API.Extensions;
+using NPMGame.API.Extensions.Api;
 
 namespace NPMGame.API
 {
@@ -22,17 +24,25 @@ namespace NPMGame.API
         {
             services.AddAutoMapper();
 
-            services.AddMvc()
-                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+            services.AddSignalR()
+                .AddJsonProtocol(builder =>
+                {
+                    var settings = new JsonSerializerSettings
+                    {
+                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                        Formatting = Formatting.None,
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    };
 
-            services.AddSignalR();
+                    settings.Converters.Add(new StringEnumConverter());
+
+                    builder.PayloadSerializerSettings = settings;
+                });
 
             services.AddCors();
 
-            services.AddMarten(Configuration);
-            services.AddUnitOfWork();
-
-            services.AddValidator();
+            services.AddCoreServices(Configuration);
 
             services.AddCookieAuthentication(Configuration);
         }
@@ -56,7 +66,7 @@ namespace NPMGame.API
 
             app.UseAuthentication();
 
-            app.UseMvc();
+            app.UseHubMappings();
         }
     }
 }
