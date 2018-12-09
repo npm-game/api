@@ -3,7 +3,7 @@ using NPMGame.Core.Engine.Letters;
 using NPMGame.Core.Engine.Words;
 using NUnit.Framework;
 
-namespace NPMGame.Core.Tests.Workers.Words
+namespace NPMGame.Core.Tests.Engine.Words
 {
     [TestFixture]
     public class WordScoringTests

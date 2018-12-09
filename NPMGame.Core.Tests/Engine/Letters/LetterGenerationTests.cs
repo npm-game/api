@@ -5,7 +5,7 @@ using NPMGame.Core.Engine.Letters;
 using NPMGame.Core.Models.Game.Words;
 using NUnit.Framework;
 
-namespace NPMGame.Core.Tests.Workers.Letters
+namespace NPMGame.Core.Tests.Engine.Letters
 {
     [TestFixture]
     public class LetterGenerationTests
