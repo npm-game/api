@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using NPMGame.Core.Workers.Letters;
+using NPMGame.Core.Services.Letters;
 
 namespace NPMGame.Core.Services.Words
 {

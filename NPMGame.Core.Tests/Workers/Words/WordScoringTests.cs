@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using NPMGame.Core.Workers.Letters;
-using NPMGame.Core.Workers.Words;
+using NPMGame.Core.Services.Letters;
+using NPMGame.Core.Services.Words;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Workers.Words
@@ -8,6 +8,13 @@ namespace NPMGame.Core.Tests.Workers.Words
     [TestFixture]
     public class WordScoringTests
     {
+        private readonly IWordScoringService _wordScoringService;
+
+        public WordScoringTests()
+        {
+            _wordScoringService = new WordScoringService();
+        }
+
         [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
@@ -30,7 +37,7 @@ namespace NPMGame.Core.Tests.Workers.Words
 
             foreach (var pair in wordScoringTestDefintions)
             {
-                var matchTypeResult = WordScorer.GetScoreForWord(pair.Key);
+                var matchTypeResult = _wordScoringService.GetScoreForWord(pair.Key);
 
                 Assert.That(matchTypeResult, Is.EqualTo(pair.Value));
             }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Models.Game.Words;
-using NPMGame.Core.Workers.Letters;
+using NPMGame.Core.Services.Letters;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Workers.Letters
@@ -10,6 +10,13 @@ namespace NPMGame.Core.Tests.Workers.Letters
     [TestFixture]
     public class LetterGenerationTests
     {
+        private readonly ILetterGeneratorService _letterGeneratorService;
+
+        public LetterGenerationTests()
+        {
+            _letterGeneratorService = new LetterGeneratorService();
+        }
+
         [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
@@ -19,7 +26,7 @@ namespace NPMGame.Core.Tests.Workers.Letters
         [Test]
         public void TestLetterGeneration()
         {
-            var generated = LettersGenerator.GenerateLetter();
+            var generated = _letterGeneratorService.GenerateLetter();
 
             Assert.That(generated, Is.Not.Null);
             Assert.That(generated, Is.TypeOf<Letter>());
@@ -34,7 +41,7 @@ namespace NPMGame.Core.Tests.Workers.Letters
         {
             const int samples = 1000000;
 
-            var generatedLetters = await LettersGenerator.GenerateLetters(samples);
+            var generatedLetters = await _letterGeneratorService.GenerateLetters(samples);
 
             var generatedLetterCounts = new Dictionary<char, int>();
 

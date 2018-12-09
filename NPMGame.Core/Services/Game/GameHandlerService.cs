@@ -10,17 +10,24 @@ using NPMGame.Core.Models.Game.Turn;
 using NPMGame.Core.Repositories.Game;
 using NPMGame.Core.Repositories.Identity;
 using NPMGame.Core.Services.Data;
-using NPMGame.Core.Workers.Letters;
-using NPMGame.Core.Workers.Words;
+using NPMGame.Core.Services.Letters;
+using NPMGame.Core.Services.Words;
 
 namespace NPMGame.Core.Services.Game
 {
     public class GameHandlerService : BaseService
     {
+        private readonly ILetterGeneratorService _letterGeneratorService;
+        private readonly IWordMatchingService _wordMatchingService;
+        private readonly IWordScoringService _wordScoringService;
+
         public GameSession Game { get; private set; }
 
-        public GameHandlerService(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public GameHandlerService(ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+            _letterGeneratorService = letterGeneratorService;
+            _wordMatchingService = wordMatchingService;
+            _wordScoringService = wordScoringService;
         }
 
         public GameHandlerService UsingGame(GameSession game)
@@ -125,7 +132,7 @@ namespace NPMGame.Core.Services.Game
 
         private async Task ProcessGuessTurn(GamePlayer currentPlayer, GameTurnGuessAction turnAction)
         {
-            var matchType = await WordMatcher.MatchWordAgainstNPM(turnAction.WordGuessed);
+            var matchType = await _wordMatchingService.MatchWordAgainstNPM(turnAction.WordGuessed);
 
             if (matchType == MatchType.Partial)
             {
@@ -136,7 +143,7 @@ namespace NPMGame.Core.Services.Game
             }
             else
             {
-                var wordScore = WordScorer.GetScoreForWord(turnAction.WordGuessed);
+                var wordScore = _wordScoringService.GetScoreForWord(turnAction.WordGuessed);
 
                 wordScore = (int)(wordScore * currentPlayer.Multiplier * 10);
 
@@ -177,7 +184,7 @@ namespace NPMGame.Core.Services.Game
             var lettersInHandCount = player.Hand.Count;
             var lettersToFill = Game.Options.HandSize - lettersInHandCount;
 
-            var generatedLetters = await LettersGenerator.GenerateLetters(lettersToFill);
+            var generatedLetters = await _letterGeneratorService.GenerateLetters(lettersToFill);
 
             player.Hand.AddRange(generatedLetters);
         }
