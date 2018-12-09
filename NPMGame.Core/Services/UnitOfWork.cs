@@ -2,7 +2,7 @@
 using Marten;
 using NPMGame.Core.Base;
 
-namespace NPMGame.Core.Services.Data
+namespace NPMGame.Core.Services
 {
     public interface IUnitOfWork
     {

@@ -5,7 +5,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using NPMGame.Core.Models.Game.Words;
 
-namespace NPMGame.Core.Services.Letters
+namespace NPMGame.Core.Engine.Letters
 {
     public static class LettersCollection
     {

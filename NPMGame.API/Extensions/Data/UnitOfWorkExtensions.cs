@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NPMGame.Core.Services.Data;
+using NPMGame.Core.Services;
 
 namespace NPMGame.API.Extensions.Data
 {

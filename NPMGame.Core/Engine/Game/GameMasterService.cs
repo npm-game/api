@@ -5,9 +5,9 @@ using NPMGame.Core.Constants.Localization;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Repositories.Game;
-using NPMGame.Core.Services.Data;
+using NPMGame.Core.Services;
 
-namespace NPMGame.Core.Services.Game
+namespace NPMGame.Core.Engine.Game
 {
     public class GameMasterService : BaseService
     {

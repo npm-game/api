@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using NPMGame.Core.Services.Letters;
-using NPMGame.Core.Services.Words;
+using NPMGame.Core.Engine.Letters;
+using NPMGame.Core.Engine.Words;
 using NUnit.Framework;
 
 namespace NPMGame.Core.Tests.Workers.Words

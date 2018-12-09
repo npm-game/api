@@ -1,5 +1,4 @@
 ﻿using NPMGame.Core.Services;
-using NPMGame.Core.Services.Data;
 
 namespace NPMGame.Core.Base
 {

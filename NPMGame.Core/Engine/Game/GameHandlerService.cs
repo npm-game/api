@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
+using NPMGame.Core.Engine.Letters;
+using NPMGame.Core.Engine.Words;
 using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Models.Game.Turn;
 using NPMGame.Core.Repositories.Game;
 using NPMGame.Core.Repositories.Identity;
-using NPMGame.Core.Services.Data;
-using NPMGame.Core.Services.Letters;
-using NPMGame.Core.Services.Words;
+using NPMGame.Core.Services;
 
-namespace NPMGame.Core.Services.Game
+namespace NPMGame.Core.Engine.Game
 {
     public class GameHandlerService : BaseService
     {

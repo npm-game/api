@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using NPMGame.Core.Models.Game.Words;
 
-namespace NPMGame.Core.Services.Letters
+namespace NPMGame.Core.Engine.Letters
 {
     public interface ILetterGeneratorService
     {

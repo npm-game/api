@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using NPMGame.Core.Services.Letters;
+using NPMGame.Core.Engine.Letters;
 
-namespace NPMGame.Core.Services.Words
+namespace NPMGame.Core.Engine.Words
 {
     public interface IWordScoringService
     {

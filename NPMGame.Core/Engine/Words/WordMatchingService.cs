@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.NPM;
 
-namespace NPMGame.Core.Services.Words
+namespace NPMGame.Core.Engine.Words
 {
     public interface IWordMatchingService
     {
