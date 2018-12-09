@@ -77,6 +77,7 @@ namespace NPMGame.Core.Services.Game
                 throw new GameException(ErrorMessages.NotYourTurn);
             }
 
+            // Take the turn actions that the player selected
             if (turnAction is GameTurnGuessAction guessAction)
             {
                 await ProcessGuessTurn(currentPlayer, guessAction);
@@ -86,7 +87,33 @@ namespace NPMGame.Core.Services.Game
                 await ProcessSwitchTurn(currentPlayer, switchAction);
             }
 
+            await EndPlayerTurn(currentPlayer);
+
             return await SaveGame();
+        }
+
+        private async Task<GameSession> EndPlayerTurn(GamePlayer currentPlayer)
+        {
+            if (currentPlayer.Score >= Game.Options.Goal)
+            {
+                // TODO: Do game end logic
+                Game.State = GameState.Done;
+
+                return Game;
+            }
+
+            // Move to next player
+            var nextPlayerIndex = Game.Players.IndexOf(currentPlayer) + 1;
+            if (nextPlayerIndex >= Game.Players.Count - 1)
+            {
+                nextPlayerIndex = 0;
+            }
+
+            var nextPlayer = Game.Players[nextPlayerIndex];
+
+            Game.CurrentTurnPlayerId = nextPlayer.UserId;
+
+            return Game;
         }
 
         private async Task<GameSession> SaveGame()

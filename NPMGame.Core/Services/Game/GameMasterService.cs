@@ -23,7 +23,7 @@ namespace NPMGame.Core.Services.Game
             {
                 options = new GameOptions
                 {
-                    Goal = 100,
+                    Goal = 1000,
                     HandSize = 7
                 };
             }
