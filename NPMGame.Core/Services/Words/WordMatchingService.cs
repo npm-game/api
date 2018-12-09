@@ -8,20 +8,32 @@ using Newtonsoft.Json;
 using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.NPM;
 
-namespace NPMGame.Core.Workers.Words
+namespace NPMGame.Core.Services.Words
 {
-    public static class WordMatcher
+    public interface IWordMatchingService
+    {
+        Task<MatchType> MatchWordAgainstNPM(string word);
+    }
+
+    public class WordMatchingService : IWordMatchingService
     {
         private const string _npmRegistryUrl = "https://registry.npmjs.org";
 
-        public static async Task<MatchType> MatchWordAgainstNPM(string word)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public WordMatchingService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        public async Task<MatchType> MatchWordAgainstNPM(string word)
         {
             var matchingNames = await GetMatchingNames(word);
 
             return GetTypeOfMatch(word, matchingNames.ToList());
         }
 
-        private static MatchType GetTypeOfMatch(string word, IReadOnlyCollection<string> packageNames)
+        private MatchType GetTypeOfMatch(string word, IReadOnlyCollection<string> packageNames)
         {
             var hasAnyExactMatches = packageNames
                 .Any(package => string.Equals(word, package, StringComparison.CurrentCultureIgnoreCase));
@@ -42,7 +54,7 @@ namespace NPMGame.Core.Workers.Words
             return MatchType.None;
         }
 
-        private static async Task<IEnumerable<string>> GetMatchingNames(string word)
+        private async Task<IEnumerable<string>> GetMatchingNames(string word)
         {
             var searchResponse = await SearchForPackages(word);
 
@@ -53,7 +65,7 @@ namespace NPMGame.Core.Workers.Words
             return matchingNames;
         }
 
-        private static async Task<NPMSearchResponse> SearchForPackages(string word)
+        private async Task<NPMSearchResponse> SearchForPackages(string word)
         {
             var searchApiUrl = $"{_npmRegistryUrl}/-/v1/search";
 
@@ -73,7 +85,7 @@ namespace NPMGame.Core.Workers.Words
 
             var requestUrl = uriBuilder.ToString();
 
-            using (var client = new HttpClient())
+            using (var client = _httpClientFactory.CreateClient())
             using (var response = await client.GetAsync(requestUrl))
             using (var content = response.Content)
             {

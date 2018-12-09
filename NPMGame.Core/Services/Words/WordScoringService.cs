@@ -1,11 +1,16 @@
 ﻿using System.Linq;
 using NPMGame.Core.Workers.Letters;
 
-namespace NPMGame.Core.Workers.Words
+namespace NPMGame.Core.Services.Words
 {
-    public static class WordScorer
+    public interface IWordScoringService
     {
-        public static int GetScoreForWord(string word)
+        int GetScoreForWord(string word);
+    }
+
+    public class WordScoringService : IWordScoringService
+    {
+        public int GetScoreForWord(string word)
         {
             var chars = word.ToUpper().ToCharArray();
 

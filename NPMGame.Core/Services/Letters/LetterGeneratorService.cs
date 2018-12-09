@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Baseline;
 using NPMGame.Core.Models.Game.Words;
 
-namespace NPMGame.Core.Workers.Letters
+namespace NPMGame.Core.Services.Letters
 {
-    public static class LettersGenerator
+    public interface ILetterGeneratorService
+    {
+        Task<List<Letter>> GenerateLetters(int count);
+        Letter GenerateLetter();
+    }
+
+    public class LetterGeneratorService : ILetterGeneratorService
     {
         private static readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();
 
-        public static async Task<List<Letter>> GenerateLetters(int count)
+        public async Task<List<Letter>> GenerateLetters(int count)
         {
             var letterTasks = new List<Task<Letter>>(new Task<Letter>[count])
                 .Select(x => Task.Run(() => GenerateLetter()));
@@ -20,7 +25,7 @@ namespace NPMGame.Core.Workers.Letters
             return (await Task.WhenAll(letterTasks)).ToList();
         }
 
-        public static Letter GenerateLetter()
+        public Letter GenerateLetter()
         {
             var lettersSortedByOccurence = LettersCollection.Letters.Values
                 .OrderBy(l => l.OccurrenceCount)
