@@ -2,7 +2,9 @@
 {
     public static class ErrorMessages
     {
-        public static string GameNotFound { get; set; }
-        public static string UserNotFound { get; set; }
+        public const string GameNotFound = "Game does not exist";
+        public const string UserNotFound = "User does not exist";
+        public const string NotYourTurn = "Can't take action. It is not this player's turn yet";
+        public const string PlayerNotInGame = "Player is not a part of this game";
     }
 }

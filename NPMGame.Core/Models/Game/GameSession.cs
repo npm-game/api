@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Marten.Schema;
-using NPMGame.Core.Models.Identity;
 
 namespace NPMGame.Core.Models.Game
 {
@@ -34,27 +33,5 @@ namespace NPMGame.Core.Models.Game
         NotStarted,
         InProgress,
         Done
-    }
-
-    public class GamePlayer
-    {
-        [ForeignKey(typeof(User))]
-        public Guid UserId { get; set; }
-
-        public List<Letter> Hand { get; set; }
-
-        public int Score { get; set; }
-        public double Multiplier { get; set; }
-
-        public GamePlayer(Guid userId)
-        {
-            UserId = userId;
-        }
-    }
-
-    public class GameOptions
-    {
-        public int Goal { get; set; }
-        public int HandSize { get; set; }
     }
 }
