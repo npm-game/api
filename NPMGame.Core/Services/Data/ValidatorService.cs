@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentValidation;
 
-namespace NPMGame.API.Services
+namespace NPMGame.Core.Services.Data
 {
     public interface IValidatorService
     {

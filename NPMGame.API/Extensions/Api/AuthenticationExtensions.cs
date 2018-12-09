@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NPMGame.API.Models.Config;
 
-namespace NPMGame.API.Extensions
+namespace NPMGame.API.Extensions.Api
 {
     public static class AuthenticationExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NPMGame.Core.Models.Game
+namespace NPMGame.Core.Models.Game.Turn
 {
     public class GameTurnAction
     {

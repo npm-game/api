@@ -1,9 +1,6 @@
-﻿using Marten;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using NPMGame.API.Models.Config;
+﻿using Microsoft.AspNetCore.Builder;
 
-namespace NPMGame.API.Extensions
+namespace NPMGame.API.Extensions.Api
 {
     public static class HubMappingExtensions
     {
@@ -11,7 +8,7 @@ namespace NPMGame.API.Extensions
         {
             builder.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
+                //routes.MapHub<ChatHub>("/chatHub");
             });
         }
     }

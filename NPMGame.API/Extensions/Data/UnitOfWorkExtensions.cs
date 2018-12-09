@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NPMGame.API.Repositories.Identity;
-using NPMGame.API.Services;
+using NPMGame.Core.Services.Data;
 
-namespace NPMGame.API.Extensions
+namespace NPMGame.API.Extensions.Data
 {
     public static class UnitOfWorkExtensions
     {
@@ -10,9 +9,6 @@ namespace NPMGame.API.Extensions
         {
             // base unit of work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // resources
-            services.AddScoped<AuthRepository>();
         }
     }
 }

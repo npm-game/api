@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NPMGame.API.Services;
+using NPMGame.Core.Services.Data;
 
-namespace NPMGame.API.Extensions
+namespace NPMGame.API.Extensions.Data
 {
     public static class ValidatorExtensions
     {

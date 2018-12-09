@@ -3,13 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NPMGame.API.Models.Config;
 
-namespace NPMGame.API.Extensions
+namespace NPMGame.API.Extensions.Data
 {
     public static class MartenExtensions
     {
         public static void AddMarten(this IServiceCollection services, IConfiguration config)
-        {
-            // configure strongly typed settings objects
+        {// configure strongly typed settings objects
             var appSettings = config.GetSection("AppSettings").Get<AppSettings>();
             var dbConfig = appSettings.Database;
 

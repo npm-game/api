@@ -4,13 +4,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Marten;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using NPMGame.API.Base;
-using NPMGame.API.Models.Identity;
 using NPMGame.API.Models.Requests;
+using NPMGame.Core.Base;
+using NPMGame.Core.Models.Identity;
 
 namespace NPMGame.API.Repositories.Identity
 {
-    public class AuthRepository : ApiRepository
+    public class AuthRepository : BaseRepository
     {
         public AuthRepository(IDocumentStore documentStore) : base(documentStore)
         {
