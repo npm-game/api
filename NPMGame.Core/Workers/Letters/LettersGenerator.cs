@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Baseline;
 using NPMGame.Core.Models.Game.Words;
 
 namespace NPMGame.Core.Workers.Letters
@@ -13,7 +14,7 @@ namespace NPMGame.Core.Workers.Letters
 
         public static async Task<List<Letter>> GenerateLetters(int count)
         {
-            var letterTasks = new List<Task<Letter>>(count)
+            var letterTasks = new List<Task<Letter>>(new Task<Letter>[count])
                 .Select(x => Task.Run(() => GenerateLetter()));
 
             return (await Task.WhenAll(letterTasks)).ToList();

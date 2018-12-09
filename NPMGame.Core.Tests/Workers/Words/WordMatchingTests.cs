@@ -5,7 +5,7 @@ using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Workers.Words;
 using NUnit.Framework;
 
-namespace NPMGame.Core.Tests.Matching
+namespace NPMGame.Core.Tests.Workers.Words
 {
     [TestFixture]
     public class WordMatchingTests
