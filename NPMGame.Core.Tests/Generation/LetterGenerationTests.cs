@@ -34,14 +34,7 @@ namespace NPMGame.Core.Tests.Generation
         {
             const int samples = 1000000;
 
-            var generatedLetterTasks = new List<Task<Letter>>();
-
-            for (var i = 0; i < samples; i++)
-            {
-                generatedLetterTasks.Add(Task.Run(() => LettersGenerator.GenerateLetter()));
-            }
-            var generatedLetters = await Task.WhenAll(generatedLetterTasks);
-
+            var generatedLetters = await LettersGenerator.GenerateLetters(samples);
 
             var generatedLetterCounts = new Dictionary<char, int>();
 
