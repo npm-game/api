@@ -109,6 +109,8 @@ namespace NPMGame.Core.Services.Game
             {
                 var wordScore = WordScorer.GetScoreForWord(turnAction.WordGuessed);
 
+                wordScore = (int)(wordScore * currentPlayer.Multiplier * 10);
+
                 if (matchType == MatchType.Exact)
                 {
                     if (currentPlayer.Streak > 0)
