@@ -15,26 +15,33 @@ using NPMGame.Core.Services;
 
 namespace NPMGame.Core.Engine.Game
 {
-    public class GameHandlerService : BaseService
+    public interface IGameHandlerService : IDisposable
+    {
+        Task<GameSession> AddPlayerToGame(Guid userId);
+        Task<GameSession> StartGame();
+        Task<GameSession> TakeTurn(GameTurnAction turnAction);
+    }
+
+    public class GameHandlerService : BaseService, IGameHandlerService
     {
         private readonly ILetterGeneratorService _letterGeneratorService;
         private readonly IWordMatchingService _wordMatchingService;
         private readonly IWordScoringService _wordScoringService;
 
-        public GameSession Game { get; private set; }
+        private GameSession _game;
 
-        public GameHandlerService(ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public GameHandlerService(GameSession game, ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+            _game = game;
+
             _letterGeneratorService = letterGeneratorService;
             _wordMatchingService = wordMatchingService;
             _wordScoringService = wordScoringService;
         }
 
-        public GameHandlerService UsingGame(GameSession game)
+        public void Dispose()
         {
-            Game = game;
-
-            return this;
+            _game = null;
         }
 
         public async Task<GameSession> AddPlayerToGame(Guid userId)
@@ -50,21 +57,21 @@ namespace NPMGame.Core.Engine.Game
             // TODO: Create GamePlayer factory to handle user ties and all that
             var player = new GamePlayer(user.Id);
 
-            Game.Players.Add(player);
+            _game.Players.Add(player);
 
-            return await SaveGame();
+            return _game;
         }
 
         public async Task<GameSession> StartGame()
         {
-            Game.State = GameState.InProgress;
-            Game.StartTime = DateTime.Now;
+            _game.State = GameState.InProgress;
+            _game.StartTime = DateTime.Now;
 
             // TODO: Do a dice roll to pick the first player
-            Game.CurrentTurnPlayerId = Game.Players.First().UserId;
+            _game.CurrentTurnPlayerId = _game.Players.First().UserId;
 
             // Fill each player's hand
-            foreach (var player in Game.Players)
+            foreach (var player in _game.Players)
             {
                 await FillPlayerHand(player);
             }
@@ -74,14 +81,14 @@ namespace NPMGame.Core.Engine.Game
 
         public async Task<GameSession> TakeTurn(GameTurnAction turnAction)
         {
-            var currentPlayer = Game.Players.FirstOrDefault(p => p.UserId == turnAction.PlayerId);
+            var currentPlayer = _game.Players.FirstOrDefault(p => p.UserId == turnAction.PlayerId);
 
             if (currentPlayer == null)
             {
                 throw new GameException(ErrorMessages.PlayerNotInGame);
             }
 
-            if (Game.CurrentTurnPlayerId != turnAction.PlayerId)
+            if (_game.CurrentTurnPlayerId != turnAction.PlayerId)
             {
                 throw new GameException(ErrorMessages.NotYourTurn);
             }
@@ -103,36 +110,39 @@ namespace NPMGame.Core.Engine.Game
 
         private async Task<GameSession> EndPlayerTurn(GamePlayer currentPlayer)
         {
-            if (currentPlayer.Score >= Game.Options.Goal)
+            if (currentPlayer.Score >= _game.Options.Goal)
             {
                 // TODO: Do game end logic
-                Game.State = GameState.Done;
+                _game.State = GameState.Done;
 
-                return Game;
+                return _game;
             }
 
             // Move to next player
-            var nextPlayerIndex = Game.Players.IndexOf(currentPlayer) + 1;
-            if (nextPlayerIndex >= Game.Players.Count - 1)
+            var nextPlayerIndex = _game.Players.IndexOf(currentPlayer) + 1;
+            if (nextPlayerIndex >= _game.Players.Count - 1)
             {
                 nextPlayerIndex = 0;
             }
 
-            var nextPlayer = Game.Players[nextPlayerIndex];
+            var nextPlayer = _game.Players[nextPlayerIndex];
 
-            Game.CurrentTurnPlayerId = nextPlayer.UserId;
+            _game.CurrentTurnPlayerId = nextPlayer.UserId;
 
-            return Game;
+            return _game;
         }
 
         private async Task<GameSession> SaveGame()
         {
-            return await UnitOfWork.GetRepository<GameSessionRepository>().Update(Game);
+            return await UnitOfWork.GetRepository<GameSessionRepository>().Update(_game);
         }
 
         private async Task ProcessGuessTurn(GamePlayer currentPlayer, GameTurnGuessAction turnAction)
         {
-            // TODO: Check if word can be made using player's hand
+            if (!CanPlayerPlayWord(currentPlayer, turnAction.WordGuessed))
+            {
+                throw new GameException(ErrorMessages.PlayerCannotPlayWord);
+            }
 
             var matchType = await _wordMatchingService.MatchWordAgainstNPM(turnAction.WordGuessed);
 
@@ -184,11 +194,29 @@ namespace NPMGame.Core.Engine.Game
         private async Task FillPlayerHand(GamePlayer player)
         {
             var lettersInHandCount = player.Hand.Count;
-            var lettersToFill = Game.Options.HandSize - lettersInHandCount;
+            var lettersToFill = _game.Options.HandSize - lettersInHandCount;
 
             var generatedLetters = await _letterGeneratorService.GenerateLetters(lettersToFill);
 
             player.Hand.AddRange(generatedLetters);
+        }
+
+        private bool CanPlayerPlayWord(GamePlayer player, string word)
+        {
+            var wordCharacters = word.ToCharArray();
+            var handCharacters = player.Hand.Select(l => l.Code).ToList();
+
+            foreach (var c in wordCharacters)
+            {
+                if (!handCharacters.Contains(c))
+                {
+                    return false;
+                }
+
+                handCharacters.Remove(c);
+            }
+
+            return true;
         }
     }
 }

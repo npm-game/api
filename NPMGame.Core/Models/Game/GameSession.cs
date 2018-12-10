@@ -19,10 +19,9 @@ namespace NPMGame.Core.Models.Game
         [ForeignKey(typeof(GamePlayer))]
         public Guid CurrentTurnPlayerId { get; set; }
 
-        public GameSession(GameOptions options)
+        public GameSession()
         {
             State = GameState.NotStarted;
-            Options = options;
 
             Players = new List<GamePlayer>();
         }
