@@ -132,6 +132,8 @@ namespace NPMGame.Core.Engine.Game
 
         private async Task ProcessGuessTurn(GamePlayer currentPlayer, GameTurnGuessAction turnAction)
         {
+            // TODO: Check if word can be made using player's hand
+
             var matchType = await _wordMatchingService.MatchWordAgainstNPM(turnAction.WordGuessed);
 
             if (matchType == MatchType.Partial)
