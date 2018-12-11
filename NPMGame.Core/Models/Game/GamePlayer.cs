@@ -19,10 +19,8 @@ namespace NPMGame.Core.Models.Game
 
         public double Multiplier => StreakMultipliers.GetStreakMultiplier(Streak);
 
-        public GamePlayer(Guid userId)
+        public GamePlayer()
         {
-            UserId = userId;
-
             Hand = new List<Letter>();
         }
     }

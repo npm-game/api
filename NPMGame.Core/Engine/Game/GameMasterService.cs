@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
 using NPMGame.Core.Engine.Letters;
@@ -14,19 +15,22 @@ namespace NPMGame.Core.Engine.Game
 {
     public class GameMasterService : BaseService
     {
-        private readonly ILetterGeneratorService _letterGeneratorService;
-        private readonly IWordMatchingService _wordMatchingService;
-        private readonly IWordScoringService _wordScoringService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public GameMasterService(ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public GameMasterService(IServiceProvider serviceProvider, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            _letterGeneratorService = letterGeneratorService;
-            _wordMatchingService = wordMatchingService;
-            _wordScoringService = wordScoringService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<GameSession> CreateGame(Guid creatorUserId, GameOptions options = null)
         {
+            var creatorUser = await UnitOfWork.GetRepository<UserRepository>().Get(creatorUserId);
+
+            if (creatorUser == null)
+            {
+                throw new GameException(ErrorMessages.UserNotFound);
+            }
+
             if (options == null)
             {
                 options = new GameOptions
@@ -43,13 +47,18 @@ namespace NPMGame.Core.Engine.Game
 
             game = await UnitOfWork.GetRepository<GameSessionRepository>().Create(game);
 
-            using (var handler = CreateHandler(game))
+            return await ForGame(game, async (handler) =>
             {
-                return await handler.AddPlayerToGame(creatorUserId);
-            }
+                handler.AddPlayerToGame(creatorUser.Id);
+            });
         }
 
-        public async Task<IGameHandlerService> CreateHandler(Guid gameId)
+        public async Task<GameSession> SaveGame(GameSession game)
+        {
+            return await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
+        }
+
+        public async Task<GameSession> ForGame(Guid gameId, Func<IGameHandlerService, Task> handlerFunc)
         {
             var game = await UnitOfWork.GetRepository<GameSessionRepository>().Get(gameId);
 
@@ -58,12 +67,16 @@ namespace NPMGame.Core.Engine.Game
                 throw new GameException(ErrorMessages.GameNotFound);
             }
 
-            return CreateHandler(game);
+            return await ForGame(game, handlerFunc);
         }
 
-        public IGameHandlerService CreateHandler(GameSession game)
+        public async Task<GameSession> ForGame(GameSession game, Func<IGameHandlerService, Task> handlerFunc)
         {
-            return new GameHandlerService(game, _letterGeneratorService, _wordMatchingService, _wordScoringService, UnitOfWork);
+            var handler = _serviceProvider.GetRequiredService<IGameHandlerService>();
+
+            await handlerFunc(handler.UsingGame(game));
+
+            return await SaveGame(handler.GetGame());
         }
     }
 }

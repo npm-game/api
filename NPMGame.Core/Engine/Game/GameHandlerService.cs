@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
 using NPMGame.Core.Engine.Letters;
 using NPMGame.Core.Engine.Words;
@@ -9,20 +8,21 @@ using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Models.Game.Turn;
-using NPMGame.Core.Repositories.Game;
-using NPMGame.Core.Repositories.Identity;
-using NPMGame.Core.Services;
+using NPMGame.Core.Models.Identity;
 
 namespace NPMGame.Core.Engine.Game
 {
-    public interface IGameHandlerService : IDisposable
+    public interface IGameHandlerService
     {
-        Task<GameSession> AddPlayerToGame(Guid userId);
-        Task<GameSession> StartGame();
-        Task<GameSession> TakeTurn(GameTurnAction turnAction);
+        IGameHandlerService UsingGame(GameSession game);
+        GameSession GetGame();
+
+        IGameHandlerService AddPlayerToGame(Guid userId);
+        Task<IGameHandlerService> StartGame();
+        Task<IGameHandlerService> TakeTurn(GameTurnAction turnAction);
     }
 
-    public class GameHandlerService : BaseService, IGameHandlerService
+    public class GameHandlerService : IGameHandlerService
     {
         private readonly ILetterGeneratorService _letterGeneratorService;
         private readonly IWordMatchingService _wordMatchingService;
@@ -30,39 +30,39 @@ namespace NPMGame.Core.Engine.Game
 
         private GameSession _game;
 
-        public GameHandlerService(GameSession game, ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public GameHandlerService(ILetterGeneratorService letterGeneratorService, IWordMatchingService wordMatchingService, IWordScoringService wordScoringService)
         {
-            _game = game;
-
             _letterGeneratorService = letterGeneratorService;
             _wordMatchingService = wordMatchingService;
             _wordScoringService = wordScoringService;
         }
 
-        public void Dispose()
+        public IGameHandlerService UsingGame(GameSession game)
         {
-            _game = null;
+            _game = game;
+
+            return this;
         }
 
-        public async Task<GameSession> AddPlayerToGame(Guid userId)
+        public GameSession GetGame()
         {
-            // TODO: Check if player already part of any other game
-            var user = await UnitOfWork.GetRepository<UserRepository>().Get(userId);
-
-            if (user == null)
-            {
-                throw new GameException(ErrorMessages.UserNotFound);
-            }
-
-            // TODO: Create GamePlayer factory to handle user ties and all that
-            var player = new GamePlayer(user.Id);
-
-            _game.Players.Add(player);
-
             return _game;
         }
 
-        public async Task<GameSession> StartGame()
+        public IGameHandlerService AddPlayerToGame(Guid userId)
+        {
+            // TODO: Create GamePlayer factory to handle user ties and all that
+            var player = new GamePlayer
+            {
+                UserId = userId
+            };
+
+            _game.Players.Add(player);
+
+            return this;
+        }
+
+        public async Task<IGameHandlerService> StartGame()
         {
             _game.State = GameState.InProgress;
             _game.StartTime = DateTime.Now;
@@ -76,10 +76,10 @@ namespace NPMGame.Core.Engine.Game
                 await FillPlayerHand(player);
             }
 
-            return await SaveGame();
+            return this;
         }
 
-        public async Task<GameSession> TakeTurn(GameTurnAction turnAction)
+        public async Task<IGameHandlerService> TakeTurn(GameTurnAction turnAction)
         {
             var currentPlayer = _game.Players.FirstOrDefault(p => p.UserId == turnAction.PlayerId);
 
@@ -103,12 +103,12 @@ namespace NPMGame.Core.Engine.Game
                 await ProcessSwitchTurn(currentPlayer, switchAction);
             }
 
-            await EndPlayerTurn(currentPlayer);
+            EndPlayerTurn(currentPlayer);
 
-            return await SaveGame();
+            return this;
         }
 
-        private async Task<GameSession> EndPlayerTurn(GamePlayer currentPlayer)
+        private GameSession EndPlayerTurn(GamePlayer currentPlayer)
         {
             if (currentPlayer.Score >= _game.Options.Goal)
             {
@@ -130,11 +130,6 @@ namespace NPMGame.Core.Engine.Game
             _game.CurrentTurnPlayerId = nextPlayer.UserId;
 
             return _game;
-        }
-
-        private async Task<GameSession> SaveGame()
-        {
-            return await UnitOfWork.GetRepository<GameSessionRepository>().Update(_game);
         }
 
         private async Task ProcessGuessTurn(GamePlayer currentPlayer, GameTurnGuessAction turnAction)
