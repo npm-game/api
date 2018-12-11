@@ -23,6 +23,7 @@ namespace NPMGame.Core.Models.Game
         {
             State = GameState.NotStarted;
 
+            Options = new GameOptions();
             Players = new List<GamePlayer>();
         }
     }
