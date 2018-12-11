@@ -53,10 +53,11 @@ namespace NPMGame.Core.Tests.Engine.Game
         }
 
         [Test]
-        public async Task TestStartGame()
+        [TestCase(5)]
+        [TestCase(7)]
+        [TestCase(10)]
+        public async Task TestStartGame(int handSize)
         {
-            const int handSize = 7;
-
             // Mock the letter generator to return stub Letters
             _letterGeneratorService.GenerateLetters(handSize).Returns(new Letter[handSize].Select(l => new Letter()).ToList());
 
