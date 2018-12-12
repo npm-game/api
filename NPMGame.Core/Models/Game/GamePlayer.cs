@@ -12,7 +12,7 @@ namespace NPMGame.Core.Models.Game
         [ForeignKey(typeof(User))]
         public Guid UserId { get; set; }
 
-        public List<Letter> Hand { get; set; }
+        public List<char> Hand { get; set; }
 
         public int Score { get; set; }
         public int Streak { get; set; }
@@ -21,7 +21,7 @@ namespace NPMGame.Core.Models.Game
 
         public GamePlayer()
         {
-            Hand = new List<Letter>();
+            Hand = new List<char>();
         }
     }
 }

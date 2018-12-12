@@ -9,15 +9,22 @@ namespace NPMGame.Core.Engine.Letters
 {
     public interface ILetterGeneratorService
     {
-        Task<List<Letter>> GenerateLetters(int count);
-        Letter GenerateLetter();
+        Task<List<char>> GenerateLetters(int count);
+        char GenerateLetter();
+    }
+
+    public class LetterGenerationException : Exception
+    {
+        public LetterGenerationException(string message) : base(message)
+        {
+        }
     }
 
     public class LetterGeneratorService : ILetterGeneratorService
     {
         private static readonly RNGCryptoServiceProvider _rngProvider = new RNGCryptoServiceProvider();
 
-        public async Task<List<Letter>> GenerateLetters(int count)
+        public async Task<List<char>> GenerateLetters(int count)
         {
             var letterTasks = new List<Task<Letter>>(new Task<Letter>[count])
                 .Select(x => Task.Run(() => GenerateLetter()));
@@ -25,7 +32,7 @@ namespace NPMGame.Core.Engine.Letters
             return (await Task.WhenAll(letterTasks)).ToList();
         }
 
-        public Letter GenerateLetter()
+        public char GenerateLetter()
         {
             var lettersSortedByOccurence = LettersCollection.Letters.Values
                 .OrderBy(l => l.OccurrenceCount)
@@ -47,7 +54,12 @@ namespace NPMGame.Core.Engine.Letters
                 }
             }
 
-            return selectedLetter;
+            if (selectedLetter == null)
+            {
+                throw new LetterGenerationException("Letter could not be generated");
+            }
+
+            return selectedLetter.Code;
         }
 
         private static int GetRandomWeight(int totalWeight)
