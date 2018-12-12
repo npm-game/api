@@ -29,11 +29,9 @@ namespace NPMGame.Core.Tests.Engine.Letters
             var generated = _letterGeneratorService.GenerateLetter();
 
             Assert.That(generated, Is.Not.Null);
-            Assert.That(generated, Is.TypeOf<Letter>());
-
-            Assert.That(generated.Code, Is.Not.Zero);
-            Assert.That(generated.Score, Is.Not.Zero);
-            Assert.That(generated.OccurrenceCount, Is.Not.Zero);
+            Assert.That(generated, Is.Not.Zero);
+            Assert.That(generated, Is.TypeOf<char>());
+            Assert.That(generated.ToString(), Does.Match(@"^[A-Z\s]$"));
         }
 
         [Test]

@@ -160,7 +160,15 @@ namespace NPMGame.Core.Engine.Game
                 }
                 else if (matchType == MatchType.None)
                 {
-                    currentPlayer.Streak++;
+                    if (currentPlayer.Streak < 0)
+                    {
+                        currentPlayer.Streak = 0;
+                    }
+                    else
+                    {
+                        currentPlayer.Streak++;
+                    }
+
                     currentPlayer.Score += wordScore;
                 }
             }
