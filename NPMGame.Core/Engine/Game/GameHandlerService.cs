@@ -64,6 +64,11 @@ namespace NPMGame.Core.Engine.Game
 
         public async Task<IGameHandlerService> StartGame()
         {
+            if (_game.Players.Count <= 1)
+            {
+                throw new GameException(ErrorMessages.NotEnoughPlayers);
+            }
+
             _game.State = GameState.InProgress;
             _game.StartTime = DateTime.Now;
 
@@ -81,6 +86,11 @@ namespace NPMGame.Core.Engine.Game
 
         public async Task<IGameHandlerService> TakeTurn(GameTurnAction turnAction)
         {
+            if (_game.State != GameState.InProgress)
+            {
+                throw new GameException(ErrorMessages.GameNotInProgress);
+            }
+
             var currentPlayer = _game.Players.FirstOrDefault(p => p.UserId == turnAction.PlayerId);
 
             if (currentPlayer == null)
