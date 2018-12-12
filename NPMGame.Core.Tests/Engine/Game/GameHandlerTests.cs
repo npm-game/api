@@ -147,7 +147,7 @@ namespace NPMGame.Core.Tests.Engine.Game
                 // Check that all players had their hands filled
                 Assert.That(game.Players, Has.All.Property("Hand").Not.Null);
                 Assert.That(game.Players, Has.All.Property("Hand").Not.Empty);
-                Assert.That(game.Players, Has.All.Property("Hand").All.TypeOf<Letter>());
+                Assert.That(game.Players, Has.All.Property("Hand").All.TypeOf<char>());
                 Assert.That(game.Players, Has.All.Property("Hand").Count.EqualTo(handSize));
             }
         }
@@ -240,7 +240,7 @@ namespace NPMGame.Core.Tests.Engine.Game
                 await _gameHandlerService.StartGame();
 
                 var player = _game.Players[0];
-                player.Hand.AddRange("txdte".ToCharArray());
+                player.Hand = "txdte".ToCharArray().ToList();
 
                 var exception = Assert.ThrowsAsync<GameException>(async () =>
                 {
@@ -308,7 +308,7 @@ namespace NPMGame.Core.Tests.Engine.Game
 
                 player.Score = playerScore;
                 player.Streak = playerStreak;
-                player.Hand.AddRange("tsuowdryxdte".ToCharArray());
+                player.Hand = "tsuowdryxdte".ToCharArray().ToList();
 
                 await _gameHandlerService.TakeTurn(new GameTurnGuessAction
                 {
@@ -338,7 +338,7 @@ namespace NPMGame.Core.Tests.Engine.Game
 
                 player.Score = playerScore;
                 player.Streak = playerStreak;
-                player.Hand.AddRange("tsuowdryxdte".ToCharArray());
+                player.Hand = "tsuowdryxdte".ToCharArray().ToList();
 
                 await _gameHandlerService.TakeTurn(new GameTurnGuessAction
                 {
@@ -348,6 +348,48 @@ namespace NPMGame.Core.Tests.Engine.Game
 
                 Assert.That(player.Score, Is.EqualTo(resultScore));
                 Assert.That(player.Streak, Is.EqualTo(resultStreak));
+            }
+
+            [Test]
+            [TestCase("fskhi", true)]
+            [TestCase("i", true)]
+            [TestCase("irweqf", false)]
+            [TestCase("46832", false)]
+            [TestCase("[[]qksh-=", false)]
+            public async Task ShouldProcessSwitchAction(string charactersToRemove, bool success)
+            {
+                await _gameHandlerService.StartGame();
+
+                var player = _game.Players[0];
+                player.Hand = "ksbfgih".ToCharArray().ToList();
+
+                var turnAction = new GameTurnSwitchAction
+                {
+                    PlayerId = _game.Players[0].UserId,
+                    CharactersSwitched = charactersToRemove.ToCharArray().ToList()
+                };
+
+                if (success)
+                {
+                    // Mock the letter generator to return stub Letters
+                    _letterGeneratorService.GenerateLetters(charactersToRemove.Length).Returns(new char[charactersToRemove.Length].ToList());
+
+                    await _gameHandlerService.TakeTurn(turnAction);
+
+                    Assert.That(player.Hand, Is.Not.Null);
+                    Assert.That(player.Hand, Is.Not.Empty);
+                    Assert.That(player.Hand, Is.All.TypeOf<char>());
+                    Assert.That(player.Hand, Has.Count.EqualTo(_game.Options.HandSize));
+                }
+                else
+                {
+                    var exception = Assert.ThrowsAsync<GameException>(async () =>
+                    {
+                        await _gameHandlerService.TakeTurn(turnAction);
+                    });
+
+                    Assert.That(exception.Message, Is.EqualTo(ErrorMessages.LetterNotInPlayerHand));
+                }
             }
         }
     }

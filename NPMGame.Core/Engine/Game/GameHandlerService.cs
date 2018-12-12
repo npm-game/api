@@ -178,8 +178,14 @@ namespace NPMGame.Core.Engine.Game
         {
             foreach (var character in turnAction.CharactersSwitched)
             {
-                var letterToRemove = currentPlayer.Hand.First(l => l == character);
-                currentPlayer.Hand.Remove(letterToRemove);
+                var removeIndex = currentPlayer.Hand.FindIndex(l => l == character);
+
+                if (removeIndex < 0)
+                {
+                    throw new GameException(ErrorMessages.LetterNotInPlayerHand);
+                }
+
+                currentPlayer.Hand.RemoveAt(removeIndex);
             }
 
             await FillPlayerHand(currentPlayer);

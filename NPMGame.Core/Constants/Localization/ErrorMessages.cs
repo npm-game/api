@@ -11,6 +11,8 @@
         public const string PlayerNotInGame = "Player is not a part of this game";
         public const string PlayerCannotPlayWord = "Player does not have the correct letters to play chosen word";
         public const string InvalidTurnAction = "Turn action taken is invalid";
+        public const string LetterNotInPlayerHand = "Letter is not in player's hand";
+
 
         // Game Exceptions
         public const string GameNotInProgress = "Game is not in progress.";
