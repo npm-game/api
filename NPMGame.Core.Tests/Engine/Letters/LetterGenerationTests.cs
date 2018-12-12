@@ -45,14 +45,12 @@ namespace NPMGame.Core.Tests.Engine.Letters
 
             foreach (var letter in generatedLetters)
             {
-                var code = letter.Code;
-
-                if (!generatedLetterCounts.ContainsKey(code))
+                if (!generatedLetterCounts.ContainsKey(letter))
                 {
-                    generatedLetterCounts[code] = 0;
+                    generatedLetterCounts[letter] = 0;
                 }
 
-                generatedLetterCounts[code]++;
+                generatedLetterCounts[letter]++;
             }
 
             // Assert that all letters are generated at least once
