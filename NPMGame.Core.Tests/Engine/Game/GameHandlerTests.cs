@@ -6,6 +6,7 @@ using NPMGame.Core.Constants.Localization;
 using NPMGame.Core.Engine.Game;
 using NPMGame.Core.Engine.Letters;
 using NPMGame.Core.Engine.Words;
+using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Models.Game.Turn;
@@ -45,8 +46,7 @@ namespace NPMGame.Core.Tests.Engine.Game
 
             _gameHandlerService = new GameHandlerService(_letterGeneratorService, _wordMatchingService, _wordScoringService);
 
-            _letterGeneratorService.GenerateLetters(_game.Options.HandSize)
-                .Returns(new Letter[_game.Options.HandSize].Select(l => new Letter()).ToList());
+            _letterGeneratorService.GenerateLetters(_game.Options.HandSize).Returns(new char[_game.Options.HandSize].ToList());
         }
 
         [TestFixture]
@@ -130,7 +130,7 @@ namespace NPMGame.Core.Tests.Engine.Game
             public async Task ShouldDealLettersToAllPlayers(int handSize)
             {
                 // Mock the letter generator to return stub Letters
-                _letterGeneratorService.GenerateLetters(handSize).Returns(new Letter[handSize].Select(l => new Letter()).ToList());
+                _letterGeneratorService.GenerateLetters(handSize).Returns(new char[handSize].ToList());
 
                 // Setup game with proper options
                 _game.Options.HandSize = handSize;
@@ -232,6 +232,122 @@ namespace NPMGame.Core.Tests.Engine.Game
                 });
 
                 Assert.That(exception.Message, Is.EqualTo(ErrorMessages.InvalidTurnAction));
+            }
+
+            [Test]
+            public async Task ShouldCheckIfPlayerCanGuessWord()
+            {
+                await _gameHandlerService.StartGame();
+
+                var player = _game.Players[0];
+                player.Hand.AddRange("txdte".ToCharArray());
+
+                var exception = Assert.ThrowsAsync<GameException>(async () =>
+                {
+                    await _gameHandlerService.TakeTurn(new GameTurnGuessAction
+                    {
+                        PlayerId = _game.Players[0].UserId,
+                        WordGuessed = "testword"
+                    });
+                });
+
+                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.PlayerCannotPlayWord));
+            }
+
+            [Test]
+            [TestCase(0, 0)]
+            [TestCase(25, 0)]
+            [TestCase(25, -3)]
+            public async Task ShouldProcessGuessActionPartialMatch(int playerScore, int playerStreak)
+            {
+                _wordMatchingService.MatchWordAgainstNPM(Arg.Any<string>()).Returns(MatchType.Partial);
+
+                await _gameHandlerService.StartGame();
+
+                const string wordGuessed = "testword";
+
+                var player = _game.Players[0];
+
+                player.Score = playerScore;
+                player.Streak = playerStreak;
+                player.Hand.AddRange("tsuowdryxdte".ToCharArray());
+
+                await _gameHandlerService.TakeTurn(new GameTurnGuessAction
+                {
+                    PlayerId = _game.Players[0].UserId,
+                    WordGuessed = wordGuessed
+                });
+
+                Assert.That(player.Score, Is.EqualTo(playerScore));
+
+                if (playerStreak > 0)
+                {
+                    Assert.That(player.Streak, Is.Zero);
+                }
+                else
+                {
+                    Assert.That(player.Streak, Is.EqualTo(playerStreak));
+                }
+            }
+
+            [Test]
+            [TestCase(10, 0, 0, 0, -1)]
+            [TestCase(10, 100, 0, 0, -1)]
+            [TestCase(10, 250, 2, 150, 0)]
+            [TestCase(10, 300, -3, 190, -4)]
+            public async Task ShouldProcessGuessActionExactMatch(int wordScore, int playerScore, int playerStreak, int resultScore, int resultStreak)
+            {
+                _wordMatchingService.MatchWordAgainstNPM(Arg.Any<string>()).Returns(MatchType.Exact);
+                _wordScoringService.GetScoreForWord(Arg.Any<string>()).Returns(wordScore);
+
+                await _gameHandlerService.StartGame();
+
+                const string wordGuessed = "testword";
+
+                var player = _game.Players[0];
+
+                player.Score = playerScore;
+                player.Streak = playerStreak;
+                player.Hand.AddRange("tsuowdryxdte".ToCharArray());
+
+                await _gameHandlerService.TakeTurn(new GameTurnGuessAction
+                {
+                    PlayerId = _game.Players[0].UserId,
+                    WordGuessed = wordGuessed
+                });
+
+                Assert.That(player.Score, Is.EqualTo(resultScore));
+                Assert.That(player.Streak, Is.EqualTo(resultStreak));
+            }
+
+            [Test]
+            [TestCase(10, 0, 0, 100, 1)]
+            [TestCase(10, 100, 0, 200, 1)]
+            [TestCase(10, 250, 2, 350, 3)]
+            [TestCase(10, 300, -3, 410, 0)]
+            public async Task ShouldProcessGuessActionNoneMatch(int wordScore, int playerScore, int playerStreak, int resultScore, int resultStreak)
+            {
+                _wordMatchingService.MatchWordAgainstNPM(Arg.Any<string>()).Returns(MatchType.None);
+                _wordScoringService.GetScoreForWord(Arg.Any<string>()).Returns(wordScore);
+
+                await _gameHandlerService.StartGame();
+
+                const string wordGuessed = "testword";
+
+                var player = _game.Players[0];
+
+                player.Score = playerScore;
+                player.Streak = playerStreak;
+                player.Hand.AddRange("tsuowdryxdte".ToCharArray());
+
+                await _gameHandlerService.TakeTurn(new GameTurnGuessAction
+                {
+                    PlayerId = _game.Players[0].UserId,
+                    WordGuessed = wordGuessed
+                });
+
+                Assert.That(player.Score, Is.EqualTo(resultScore));
+                Assert.That(player.Streak, Is.EqualTo(resultStreak));
             }
         }
     }
