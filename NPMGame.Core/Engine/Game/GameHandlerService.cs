@@ -108,9 +108,13 @@ namespace NPMGame.Core.Engine.Game
             {
                 await ProcessGuessTurn(currentPlayer, guessAction);
             }
-            if (turnAction is GameTurnSwitchAction switchAction)
+            else if (turnAction is GameTurnSwitchAction switchAction)
             {
                 await ProcessSwitchTurn(currentPlayer, switchAction);
+            }
+            else
+            {
+                throw new GameException(ErrorMessages.InvalidTurnAction);
             }
 
             EndPlayerTurn(currentPlayer);

@@ -217,6 +217,22 @@ namespace NPMGame.Core.Tests.Engine.Game
 
                 Assert.That(exception.Message, Is.EqualTo(ErrorMessages.NotYourTurn));
             }
+
+            [Test]
+            public async Task ShouldValidateTypeOfAction()
+            {
+                await _gameHandlerService.StartGame();
+
+                var exception = Assert.ThrowsAsync<GameException>(async () =>
+                {
+                    await _gameHandlerService.TakeTurn(new GameTurnAction
+                    {
+                        PlayerId = _game.Players[0].UserId
+                    });
+                });
+
+                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.InvalidTurnAction));
+            }
         }
     }
 }
