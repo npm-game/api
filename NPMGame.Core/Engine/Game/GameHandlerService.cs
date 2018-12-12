@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NPMGame.Core.Constants.Localization;
@@ -122,30 +123,6 @@ namespace NPMGame.Core.Engine.Game
             return this;
         }
 
-        private GameSession EndPlayerTurn(GamePlayer currentPlayer)
-        {
-            if (currentPlayer.Score >= _game.Options.Goal)
-            {
-                // TODO: Do game end logic
-                _game.State = GameState.Done;
-
-                return _game;
-            }
-
-            // Move to next player
-            var nextPlayerIndex = _game.Players.IndexOf(currentPlayer) + 1;
-            if (nextPlayerIndex >= _game.Players.Count - 1)
-            {
-                nextPlayerIndex = 0;
-            }
-
-            var nextPlayer = _game.Players[nextPlayerIndex];
-
-            _game.CurrentTurnPlayerId = nextPlayer.UserId;
-
-            return _game;
-        }
-
         private async Task ProcessGuessTurn(GamePlayer currentPlayer, GameTurnGuessAction turnAction)
         {
             if (!CanPlayerPlayWord(currentPlayer, turnAction.WordGuessed))
@@ -193,11 +170,35 @@ namespace NPMGame.Core.Engine.Game
         {
             foreach (var character in turnAction.CharactersSwitched)
             {
-                var letterToRemove = currentPlayer.Hand.First(l => l.Code == character);
+                var letterToRemove = currentPlayer.Hand.First(l => l == character);
                 currentPlayer.Hand.Remove(letterToRemove);
             }
 
             await FillPlayerHand(currentPlayer);
+        }
+
+        private GameSession EndPlayerTurn(GamePlayer currentPlayer)
+        {
+            if (currentPlayer.Score >= _game.Options.Goal)
+            {
+                // TODO: Do game end logic
+                _game.State = GameState.Done;
+
+                return _game;
+            }
+
+            // Move to next player
+            var nextPlayerIndex = _game.Players.IndexOf(currentPlayer) + 1;
+            if (nextPlayerIndex >= _game.Players.Count - 1)
+            {
+                nextPlayerIndex = 0;
+            }
+
+            var nextPlayer = _game.Players[nextPlayerIndex];
+
+            _game.CurrentTurnPlayerId = nextPlayer.UserId;
+
+            return _game;
         }
 
         private async Task FillPlayerHand(GamePlayer player)
@@ -213,7 +214,7 @@ namespace NPMGame.Core.Engine.Game
         private bool CanPlayerPlayWord(GamePlayer player, string word)
         {
             var wordCharacters = word.ToCharArray();
-            var handCharacters = player.Hand.Select(l => l.Code).ToList();
+            var handCharacters = new List<char>(player.Hand);
 
             foreach (var c in wordCharacters)
             {
