@@ -47,10 +47,13 @@ namespace NPMGame.Core.Engine.Game
 
             game = await UnitOfWork.GetRepository<GameSessionRepository>().Create(game);
 
-            return await ForGame(game, async (handler) =>
-            {
-                handler.AddPlayerToGame(creatorUser.Id);
-            });
+            game = CreateHandler(game)
+                .AddPlayerToGame(creatorUser.Id)
+                .GetGame();
+
+            await SaveGame(game);
+
+            return game;
         }
 
         public async Task<GameSession> SaveGame(GameSession game)
@@ -58,7 +61,7 @@ namespace NPMGame.Core.Engine.Game
             return await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
         }
 
-        public async Task<GameSession> ForGame(Guid gameId, Func<IGameHandlerService, Task> handlerFunc)
+        public async Task<IGameHandlerService> CreateHandler(Guid gameId)
         {
             var game = await UnitOfWork.GetRepository<GameSessionRepository>().Get(gameId);
 
@@ -67,16 +70,14 @@ namespace NPMGame.Core.Engine.Game
                 throw new GameException(ErrorMessages.GameNotFound);
             }
 
-            return await ForGame(game, handlerFunc);
+            return CreateHandler(game);
         }
 
-        public async Task<GameSession> ForGame(GameSession game, Func<IGameHandlerService, Task> handlerFunc)
+        public IGameHandlerService CreateHandler(GameSession game)
         {
             var handler = _serviceProvider.GetRequiredService<IGameHandlerService>();
 
-            await handlerFunc(handler.UsingGame(game));
-
-            return await SaveGame(handler.GetGame());
+            return handler.UsingGame(game);
         }
     }
 }

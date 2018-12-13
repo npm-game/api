@@ -9,7 +9,6 @@ using NPMGame.Core.Models.Enums;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Models.Game.Turn;
-using NPMGame.Core.Models.Identity;
 
 namespace NPMGame.Core.Engine.Game
 {
