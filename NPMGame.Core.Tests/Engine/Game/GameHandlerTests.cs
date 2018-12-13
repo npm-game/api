@@ -391,6 +391,39 @@ namespace NPMGame.Core.Tests.Engine.Game
                     Assert.That(exception.Message, Is.EqualTo(ErrorMessages.LetterNotInPlayerHand));
                 }
             }
+
+            [Test]
+            [TestCase(10, GameState.InProgress)]
+            [TestCase(90, GameState.InProgress)]
+            [TestCase(99, GameState.InProgress)]
+            [TestCase(100, GameState.Done)]
+            [TestCase(101, GameState.Done)]
+            [TestCase(110, GameState.Done)]
+            public async Task ShouldEndGameWhenAPlayerWins(int wordScore, GameState stateAfterTurn)
+            {
+                _wordMatchingService.MatchWordAgainstNPM(Arg.Any<string>()).Returns(MatchType.None);
+                _wordScoringService.GetScoreForWord(Arg.Any<string>()).Returns(wordScore);
+
+                await _gameHandlerService.StartGame();
+
+                const string wordGuessed = "testword";
+
+                var player = _game.Players[0];
+                player.Hand = "tsuowdryxdte".ToCharArray().ToList();
+
+                await _gameHandlerService.TakeTurn(new GameTurnGuessAction
+                {
+                    PlayerId = _game.Players[0].UserId,
+                    WordGuessed = wordGuessed
+                });
+
+                Assert.That(_game.State, Is.EqualTo(stateAfterTurn));
+
+                if (stateAfterTurn == GameState.Done)
+                {
+                    Assert.That(_game.Winner.UserId, Is.EqualTo(player.UserId));
+                }
+            }
         }
     }
 }

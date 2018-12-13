@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Marten.Schema;
 
 namespace NPMGame.Core.Models.Game
@@ -18,6 +19,8 @@ namespace NPMGame.Core.Models.Game
 
         [ForeignKey(typeof(GamePlayer))]
         public Guid CurrentTurnPlayerId { get; set; }
+
+        public GamePlayer Winner => Players.FirstOrDefault(p => p.Score >= Options.Goal);
 
         public GameSession()
         {
