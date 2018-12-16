@@ -2,7 +2,7 @@
 
 namespace NPMGame.Core.Base
 {
-    public class BaseService
+    public abstract class BaseService
     {
         protected readonly IUnitOfWork UnitOfWork;
 

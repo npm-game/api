@@ -2,11 +2,11 @@
 
 namespace NPMGame.Core.Base
 {
-    public class BaseRepository
+    public abstract class BaseRepository
     {
         protected readonly IDocumentStore _store;
 
-        public BaseRepository(IDocumentStore documentStore)
+        protected BaseRepository(IDocumentStore documentStore)
         {
             _store = documentStore;
         }

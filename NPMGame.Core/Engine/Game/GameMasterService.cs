@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
-using NPMGame.Core.Engine.Letters;
-using NPMGame.Core.Engine.Words;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
 using NPMGame.Core.Repositories.Game;
@@ -13,7 +11,15 @@ using NPMGame.Core.Services;
 
 namespace NPMGame.Core.Engine.Game
 {
-    public class GameMasterService : BaseService
+    public interface IGameMasterService
+    {
+        Task<GameSession> CreateGame(Guid creatorUserId, GameOptions options = null);
+        Task<GameSession> SaveGame(GameSession game);
+        Task<IGameHandlerService> CreateHandler(Guid gameId);
+        IGameHandlerService CreateHandler(GameSession game);
+    }
+
+    public class GameMasterService : BaseService, IGameMasterService
     {
         private readonly IServiceProvider _serviceProvider;
 
