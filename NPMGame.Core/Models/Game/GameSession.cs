@@ -13,13 +13,13 @@ namespace NPMGame.Core.Models.Game
         public GameState State { get; set; }
         public GameOptions Options { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public List<GamePlayer> Players { get; set; }
 
         [ForeignKey(typeof(User))]
-        public Guid CurrentTurnPlayerId { get; set; }
+        public Guid? CurrentTurnPlayerId { get; set; }
 
         public GamePlayer Winner => Players.FirstOrDefault(p => p.Score >= Options.Goal);
 

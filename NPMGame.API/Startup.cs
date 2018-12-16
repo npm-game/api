@@ -26,6 +26,7 @@ namespace NPMGame.API
         {
             services.AddAutoMapper();
 
+            services.AddHttpClient();
             services.AddCors();
 
             services.AddMarten();

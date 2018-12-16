@@ -56,7 +56,7 @@ namespace NPMGame.API.Controllers
 
             var game = await _gameMaster.CreateGame(user);
 
-            return Created("", game);
+            return Created("", game);                                                                                                                                                                                                       
         }
     }
 }
