@@ -22,5 +22,15 @@ namespace NPMGame.Core.Repositories.Identity
                 return user;
             }
         }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var user = await session.Query<User>().Where(u => u.Email == email).FirstOrDefaultAsync();
+
+                return user;
+            }
+        }
     }
 }

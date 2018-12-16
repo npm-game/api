@@ -23,6 +23,18 @@ namespace NPMGame.Core.Repositories.Game
             }
         }
 
+        public async Task<GameSession> GetGameForUser(Guid userId)
+        {
+            using (var session = _store.QuerySession())
+            {
+                var game = await session.Query<GameSession>()
+                    .Where(g => g.Players.Any(p => p.UserId == userId))
+                    .FirstOrDefaultAsync();
+
+                return game;
+            }
+        }
+
         public async Task<GameSession> Create(GameSession game)
         {
             using (var session = _store.OpenSession())
