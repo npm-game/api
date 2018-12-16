@@ -45,6 +45,8 @@ namespace NPMGame.API
             services.AddCoreServices(Configuration);
 
             services.AddCookieAuthentication(Configuration);
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +69,8 @@ namespace NPMGame.API
             app.UseAuthentication();
 
             app.UseHubMappings();
+
+            app.UseMvc();
         }
     }
 }
