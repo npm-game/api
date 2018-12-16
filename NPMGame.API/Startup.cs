@@ -5,8 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using NPMGame.API.Extensions;
 using NPMGame.API.Extensions.Api;
+using NPMGame.API.Extensions.Data;
+using NPMGame.Core.Extensions;
 
 namespace NPMGame.API
 {
@@ -42,7 +43,9 @@ namespace NPMGame.API
 
             services.AddCors();
 
-            services.AddCoreServices(Configuration);
+            services.AddMarten(Configuration);
+            services.AddCoreServices();
+            services.AddApiServices();
 
             services.AddCookieAuthentication(Configuration);
 
