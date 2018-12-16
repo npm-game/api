@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using NPMGame.API.Extensions.Api;
 using NPMGame.API.Extensions.Data;
 using NPMGame.Core.Extensions;
@@ -25,31 +26,38 @@ namespace NPMGame.API
         {
             services.AddAutoMapper();
 
-            services.AddSignalR()
-                .AddJsonProtocol(builder =>
-                {
-                    var settings = new JsonSerializerSettings
-                    {
-                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                        Formatting = Formatting.None,
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    };
-
-                    settings.Converters.Add(new StringEnumConverter());
-
-                    builder.PayloadSerializerSettings = settings;
-                });
-
             services.AddCors();
 
-            services.AddMarten(Configuration);
+            services.AddMarten();
             services.AddCoreServices();
             services.AddApiServices();
 
             services.AddCookieAuthentication(Configuration);
 
-            services.AddMvc();
+            services
+                .AddSignalR()
+                .AddJsonProtocol(builder =>
+                {
+                    builder.PayloadSerializerSettings.ContractResolver = new DefaultContractResolver();
+                    builder.PayloadSerializerSettings.Converters.Add(new StringEnumConverter());
+
+                    builder.PayloadSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                    builder.PayloadSerializerSettings.Formatting = Formatting.None;
+                    builder.PayloadSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    builder.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
+
+            services.AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+
+                    options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                    options.SerializerSettings.Formatting = Formatting.None;
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
