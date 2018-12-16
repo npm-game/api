@@ -5,6 +5,7 @@ using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
 using NPMGame.Core.Models.Exceptions;
 using NPMGame.Core.Models.Game;
+using NPMGame.Core.Models.Identity;
 using NPMGame.Core.Repositories.Game;
 using NPMGame.Core.Repositories.Identity;
 using NPMGame.Core.Services;
@@ -13,7 +14,7 @@ namespace NPMGame.Core.Engine.Game
 {
     public interface IGameMasterService
     {
-        Task<GameSession> CreateGame(Guid creatorUserId, GameOptions options = null);
+        Task<GameSession> CreateGame(User creatorUser, GameOptions options = null);
         Task<GameSession> SaveGame(GameSession game);
         Task<IGameHandlerService> CreateHandler(Guid gameId);
         IGameHandlerService CreateHandler(GameSession game);
@@ -28,15 +29,8 @@ namespace NPMGame.Core.Engine.Game
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<GameSession> CreateGame(Guid creatorUserId, GameOptions options = null)
+        public async Task<GameSession> CreateGame(User creatorUser, GameOptions options = null)
         {
-            var creatorUser = await UnitOfWork.GetRepository<UserRepository>().Get(creatorUserId);
-
-            if (creatorUser == null)
-            {
-                throw new GameException(ErrorMessages.UserNotFound);
-            }
-
             if (options == null)
             {
                 options = new GameOptions
