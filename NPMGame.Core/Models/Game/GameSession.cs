@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Marten.Schema;
+using NPMGame.Core.Models.Identity;
 
 namespace NPMGame.Core.Models.Game
 {
@@ -17,7 +18,7 @@ namespace NPMGame.Core.Models.Game
 
         public List<GamePlayer> Players { get; set; }
 
-        [ForeignKey(typeof(GamePlayer))]
+        [ForeignKey(typeof(User))]
         public Guid CurrentTurnPlayerId { get; set; }
 
         public GamePlayer Winner => Players.FirstOrDefault(p => p.Score >= Options.Goal);

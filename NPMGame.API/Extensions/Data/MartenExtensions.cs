@@ -1,4 +1,5 @@
 ﻿using Marten;
+using Marten.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NPMGame.API.Models.Config;
@@ -20,6 +21,12 @@ namespace NPMGame.API.Extensions.Data
                 return DocumentStore.For(options =>
                 {
                     options.Connection($"host={dbConfig.Host};port={dbConfig.Port};database={dbConfig.Name};username={dbConfig.Username};password={dbConfig.Password}");
+
+                    options.Serializer(new JsonNetSerializer
+                    {
+                        EnumStorage = EnumStorage.AsString,
+                        Casing = Casing.Default
+                    });
                 });
             });
         }
