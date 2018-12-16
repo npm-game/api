@@ -41,6 +41,8 @@ namespace NPMGame.API.Repositories.Identity
                 // User is legit, create a new claim identity
                 var claims = new List<Claim>
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email)
                 };
 
@@ -80,23 +82,6 @@ namespace NPMGame.API.Repositories.Identity
 
                     return newUser;
                 }
-            }
-        }
-
-        public async Task<User> GetUserByEmail(string emailAddress)
-        {
-            if (emailAddress == null)
-            {
-                return null;
-            }
-
-            using (var session = _store.QuerySession())
-            {
-                var user = await session.Query<User>()
-                    .Where(u => u.Email == emailAddress)
-                    .FirstOrDefaultAsync();
-
-                return user;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AlbaVulpes.API.Models.Responses;
@@ -10,6 +11,7 @@ using NPMGame.API.Base;
 using NPMGame.API.Models.Requests;
 using NPMGame.API.Repositories.Identity;
 using NPMGame.API.Validators;
+using NPMGame.Core.Repositories.Identity;
 using NPMGame.Core.Services;
 
 namespace NPMGame.API.Controllers
@@ -27,14 +29,9 @@ namespace NPMGame.API.Controllers
         public async Task<IActionResult> Status()
         {
             var user = HttpContext.User;
-            var userEmail = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if (userEmail == null)
-            {
-                return Unauthorized();
-            }
-
-            var dbUser = await UnitOfWork.GetRepository<AuthRepository>().GetUserByEmail(userEmail);
+            var dbUser = await UnitOfWork.GetRepository<UserRepository>().Get(Guid.Parse(userId));
 
             return Ok(new StatusResponse
             {
