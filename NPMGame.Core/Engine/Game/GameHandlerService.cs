@@ -95,7 +95,7 @@ namespace NPMGame.Core.Engine.Game
 
             if (currentPlayer == null)
             {
-                throw new GameException(ErrorMessages.AccessErrors.UserNotPlayer);
+                throw new GameException(ErrorMessages.UserErrors.UserNotPlayer);
             }
 
             if (_game.CurrentTurnPlayerId != turnAction.PlayerId)

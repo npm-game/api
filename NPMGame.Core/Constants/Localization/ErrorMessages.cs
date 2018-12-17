@@ -2,11 +2,12 @@
 {
     public static class ErrorMessages
     {
-        public static class AccessErrors
+        public static class UserErrors
         {
             public const string UserNotAuthorized = "You are not authorized";
             public const string UserNotOwner = "You are not the creator of this game";
             public const string UserNotPlayer = "You are not a player in this game";
+            public const string UserNotInAnyGame = "You are not a part of any game";
         }
 
         // Data Exceptions

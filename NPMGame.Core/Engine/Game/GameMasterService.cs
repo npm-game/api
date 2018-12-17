@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -72,14 +73,14 @@ namespace NPMGame.Core.Engine.Game
 
             if (userId == null)
             {
-                throw new GameException(ErrorMessages.AccessErrors.UserNotAuthorized);
+                throw new GameException(ErrorMessages.UserErrors.UserNotAuthorized, HttpStatusCode.Unauthorized);
             }
 
             var currentUser = await UnitOfWork.GetRepository<UserRepository>().Get(Guid.Parse(userId));
 
             if (currentUser == null)
             {
-                throw new GameException(ErrorMessages.UserNotFound);
+                throw new GameException(ErrorMessages.UserNotFound, HttpStatusCode.NotFound);
             }
 
             return currentUser;
@@ -93,6 +94,11 @@ namespace NPMGame.Core.Engine.Game
             }
 
             var game = await UnitOfWork.GetRepository<GameSessionRepository>().GetGameForUser(user.Id);
+
+            if (game == null)
+            {
+                throw new GameException(ErrorMessages.UserErrors.UserNotInAnyGame, HttpStatusCode.NotFound);
+            }
 
             return game;
         }
@@ -112,7 +118,7 @@ namespace NPMGame.Core.Engine.Game
 
             if (user.Id != game.OwnerId)
             {
-                throw new GameException(ErrorMessages.AccessErrors.UserNotOwner);
+                throw new GameException(ErrorMessages.UserErrors.UserNotOwner, HttpStatusCode.Forbidden);
             }
         }
 
@@ -129,7 +135,7 @@ namespace NPMGame.Core.Engine.Game
 
             if (!game.Players.Any(p => p.UserId == user.Id))
             {
-                throw new GameException(ErrorMessages.AccessErrors.UserNotPlayer);
+                throw new GameException(ErrorMessages.UserErrors.UserNotPlayer);
             }
         }
 
