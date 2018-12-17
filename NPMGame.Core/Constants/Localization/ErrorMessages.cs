@@ -2,17 +2,22 @@
 {
     public static class ErrorMessages
     {
+        public static class AccessErrors
+        {
+            public const string UserNotAuthorized = "You are not authorized";
+            public const string UserNotOwner = "You are not the creator of this game";
+            public const string UserNotPlayer = "You are not a player in this game";
+        }
+
         // Data Exceptions
         public const string GameNotFound = "Game does not exist";
         public const string UserNotFound = "User does not exist";
-
+        
         // Player Exceptions
         public const string NotYourTurn = "Can't take action. It is not this player's turn yet";
-        public const string PlayerNotInGame = "Player is not a part of this game";
         public const string PlayerCannotPlayWord = "Player does not have the correct letters to play chosen word";
         public const string InvalidTurnAction = "Turn action taken is invalid";
         public const string LetterNotInPlayerHand = "Letter is not in player's hand";
-
 
         // Game Exceptions
         public const string GameNotInProgress = "Game is not in progress.";

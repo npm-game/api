@@ -199,7 +199,7 @@ namespace NPMGame.Core.Tests.Engine.Game
                     });
                 });
 
-                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.PlayerNotInGame));
+                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.AccessErrors.UserNotPlayer));
             }
 
             [Test]

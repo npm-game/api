@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NPMGame.Core.Base;
 using NPMGame.Core.Constants.Localization;
@@ -15,18 +18,23 @@ namespace NPMGame.Core.Engine.Game
     public interface IGameMasterService
     {
         Task<GameSession> CreateGame(User creatorUser, GameOptions options = null);
-        Task<GameSession> SaveGame(GameSession game);
-        Task<IGameHandlerService> CreateHandler(Guid gameId);
         IGameHandlerService CreateHandler(GameSession game);
+
+        Task<User> GetCurrentUser();
+        Task<GameSession> GetGameForCurrentUser(User user = null);
+        Task TryAuthorizeUserAsOwner(GameSession game = null, User user = null);
+        Task TryAuthorizeUserAsPlayer(GameSession game = null, User user = null);
     }
 
     public class GameMasterService : BaseService, IGameMasterService
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GameMasterService(IServiceProvider serviceProvider, IUnitOfWork unitOfWork) : base(unitOfWork)
+        public GameMasterService(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _serviceProvider = serviceProvider;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<GameSession> CreateGame(User creatorUser, GameOptions options = null)
@@ -42,7 +50,8 @@ namespace NPMGame.Core.Engine.Game
 
             var game = new GameSession
             {
-                Options = options
+                Options = options,
+                OwnerId = creatorUser.Id
             };
 
             game = await UnitOfWork.GetRepository<GameSessionRepository>().Create(game);
@@ -51,26 +60,77 @@ namespace NPMGame.Core.Engine.Game
                 .AddPlayerToGame(creatorUser.Id)
                 .GetGame();
 
-            await SaveGame(game);
+            await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
 
             return game;
         }
 
-        public async Task<GameSession> SaveGame(GameSession game)
+        public async Task<User> GetCurrentUser()
         {
-            return await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
-        }
+            var context = _httpContextAccessor.HttpContext;
+            var userId = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        public async Task<IGameHandlerService> CreateHandler(Guid gameId)
-        {
-            var game = await UnitOfWork.GetRepository<GameSessionRepository>().Get(gameId);
-
-            if (game == null)
+            if (userId == null)
             {
-                throw new GameException(ErrorMessages.GameNotFound);
+                throw new GameException(ErrorMessages.AccessErrors.UserNotAuthorized);
             }
 
-            return CreateHandler(game);
+            var currentUser = await UnitOfWork.GetRepository<UserRepository>().Get(Guid.Parse(userId));
+
+            if (currentUser == null)
+            {
+                throw new GameException(ErrorMessages.UserNotFound);
+            }
+
+            return currentUser;
+        }
+
+        public async Task<GameSession> GetGameForCurrentUser(User user = null)
+        {
+            if (user == null)
+            {
+                user = await GetCurrentUser();
+            }
+
+            var game = await UnitOfWork.GetRepository<GameSessionRepository>().GetGameForUser(user.Id);
+
+            return game;
+        }
+
+        public async Task TryAuthorizeUserAsOwner(GameSession game = null, User user = null)
+        {
+            if (user == null)
+            {
+                user = await GetCurrentUser();
+            }
+            if (game == null)
+            {
+                game = await GetGameForCurrentUser(user);
+            }
+
+            await TryAuthorizeUserAsPlayer(game, user);
+
+            if (user.Id != game.OwnerId)
+            {
+                throw new GameException(ErrorMessages.AccessErrors.UserNotOwner);
+            }
+        }
+
+        public async Task TryAuthorizeUserAsPlayer(GameSession game = null, User user = null)
+        {
+            if (user == null)
+            {
+                user = await GetCurrentUser();
+            }
+            if (game == null)
+            {
+                game = await GetGameForCurrentUser(user);
+            }
+
+            if (!game.Players.Any(p => p.UserId == user.Id))
+            {
+                throw new GameException(ErrorMessages.AccessErrors.UserNotPlayer);
+            }
         }
 
         public IGameHandlerService CreateHandler(GameSession game)
