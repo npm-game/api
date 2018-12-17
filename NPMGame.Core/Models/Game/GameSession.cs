@@ -19,6 +19,9 @@ namespace NPMGame.Core.Models.Game
         public List<GamePlayer> Players { get; set; }
 
         [ForeignKey(typeof(User))]
+        public Guid OwnerId { get; set; }
+
+        [ForeignKey(typeof(User))]
         public Guid? CurrentTurnPlayerId { get; set; }
 
         public GamePlayer Winner => Players.FirstOrDefault(p => p.Score >= Options.Goal);
