@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using NPMGame.API.Hubs;
 
 namespace NPMGame.API.Extensions.Api
 {
@@ -8,7 +9,7 @@ namespace NPMGame.API.Extensions.Api
         {
             builder.UseSignalR(routes =>
             {
-                //routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<GameSessionHub>("/games");
             });
         }
     }
