@@ -77,7 +77,7 @@ namespace NPMGame.API
             app.UseCors(builder => builder
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:9001")
                 .AllowCredentials()
             );
 
