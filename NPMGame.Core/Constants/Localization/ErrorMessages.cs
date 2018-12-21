@@ -10,8 +10,15 @@
             public const string UserNotInAnyGame = "You are not a part of any game";
         }
 
+        public static class GameErrors
+        {
+            public const string GameNotFound = "Game does not exist";
+            public const string CannotStartGame = "Cannot start game. Invalid game state.";
+            public const string GameNotInProgress = "Game is not in progress";
+            public const string NotEnoughPlayers = "Cannot start game without at least 2 players";
+        }
+
         // Data Exceptions
-        public const string GameNotFound = "Game does not exist";
         public const string UserNotFound = "User does not exist";
         
         // Player Exceptions
@@ -19,9 +26,5 @@
         public const string PlayerCannotPlayWord = "Player does not have the correct letters to play chosen word";
         public const string InvalidTurnAction = "Turn action taken is invalid";
         public const string LetterNotInPlayerHand = "Letter is not in player's hand";
-
-        // Game Exceptions
-        public const string GameNotInProgress = "Game is not in progress.";
-        public const string NotEnoughPlayers = "Cannot start game without at least 2 players";
     }
 }

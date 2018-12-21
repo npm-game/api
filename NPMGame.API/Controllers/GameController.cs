@@ -36,7 +36,7 @@ namespace NPMGame.API.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateGame()
         {
             try

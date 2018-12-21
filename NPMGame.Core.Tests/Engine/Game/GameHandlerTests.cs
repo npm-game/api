@@ -90,7 +90,7 @@ namespace NPMGame.Core.Tests.Engine.Game
                     await _gameHandlerService.StartGame();
                 });
 
-                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.NotEnoughPlayers));
+                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.GameErrors.NotEnoughPlayers));
             }
 
             [Test]
@@ -183,7 +183,7 @@ namespace NPMGame.Core.Tests.Engine.Game
                     });
                 });
 
-                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.GameNotInProgress));
+                Assert.That(exception.Message, Is.EqualTo(ErrorMessages.GameErrors.GameNotInProgress));
             }
 
             [Test]

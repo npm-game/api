@@ -51,6 +51,11 @@ namespace NPMGame.Core.Engine.Game
 
         public IGameHandlerService AddPlayerToGame(Guid userId)
         {
+            if (_game.Players.Any(p => p.UserId == userId))
+            {
+                return this;
+            }
+
             // TODO: Create GamePlayer factory to handle user ties and all that
             var player = new GamePlayer
             {
@@ -64,9 +69,14 @@ namespace NPMGame.Core.Engine.Game
 
         public async Task<IGameHandlerService> StartGame()
         {
+            if (_game.State != GameState.NotStarted)
+            {
+                throw new GameException(ErrorMessages.GameErrors.CannotStartGame);
+            }
+
             if (_game.Players.Count <= 1)
             {
-                throw new GameException(ErrorMessages.NotEnoughPlayers);
+                throw new GameException(ErrorMessages.GameErrors.NotEnoughPlayers);
             }
 
             _game.State = GameState.InProgress;
@@ -88,7 +98,7 @@ namespace NPMGame.Core.Engine.Game
         {
             if (_game.State != GameState.InProgress)
             {
-                throw new GameException(ErrorMessages.GameNotInProgress);
+                throw new GameException(ErrorMessages.GameErrors.GameNotInProgress);
             }
 
             var currentPlayer = _game.Players.FirstOrDefault(p => p.UserId == turnAction.PlayerId);
@@ -202,7 +212,7 @@ namespace NPMGame.Core.Engine.Game
 
             // Move to next player
             var nextPlayerIndex = _game.Players.IndexOf(currentPlayer) + 1;
-            if (nextPlayerIndex >= _game.Players.Count - 1)
+            if (nextPlayerIndex > _game.Players.Count - 1)
             {
                 nextPlayerIndex = 0;
             }

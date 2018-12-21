@@ -57,12 +57,6 @@ namespace NPMGame.Core.Engine.Game
 
             game = await UnitOfWork.GetRepository<GameSessionRepository>().Create(game);
 
-            game = CreateHandler(game)
-                .AddPlayerToGame(creatorUser.Id)
-                .GetGame();
-
-            await UnitOfWork.GetRepository<GameSessionRepository>().Update(game);
-
             return game;
         }
 
