@@ -28,7 +28,8 @@ namespace NPMGame.Core.Repositories.Game
             using (var session = _store.QuerySession())
             {
                 var game = await session.Query<GameSession>()
-                    .Where(g => g.Players.Any(p => p.UserId == userId))
+                    .Where(g => g.State != GameState.Done)
+                    .Where(g => g.OwnerId == userId || g.Players.Any(p => p.UserId == userId))
                     .FirstOrDefaultAsync();
 
                 return game;
