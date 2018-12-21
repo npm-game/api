@@ -30,6 +30,8 @@ namespace NPMGame.Core.Extensions
         }
         public static void AddServices(this IServiceCollection services)
         {
+            LettersCollection.Init();
+
             services.AddScoped<ILetterGeneratorService, LetterGeneratorService>();
             services.AddScoped<IWordMatchingService, WordMatchingService>();
             services.AddScoped<IWordScoringService, WordScoringService>();
